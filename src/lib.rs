@@ -316,9 +316,8 @@ fn bench_bitset_dp(b: &mut test::Bencher) {
         v.push(rng.next_u32() as usize % size);
     }
 
-    let sum = v.iter().sum::<usize>();
     b.iter(|| {
-        let mut bset = BitSet::new(sum + 1);
+        let mut bset = BitSet::new(100000);
         bset.set(0, true);
 
         for &x in &v {
