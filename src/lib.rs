@@ -184,11 +184,11 @@ impl<'a> std::ops::BitXor<&'a BitSet> for BitSet {
 
 #[test]
 fn test_bitset_set_read() {
+    use rand::prelude::*;
     let size = 6400;
-    use rand::{Rng, SeedableRng, StdRng};
     let mut set = BitSet::new(size);
     let mut v = vec![false; size];
-    let mut rng = StdRng::from_seed(&[1, 2, 3]);
+    let mut rng = StdRng::seed_from_u64(114514);
 
     for i in 0..size {
         let b = rng.next_u32() % 2 == 0;
@@ -204,10 +204,10 @@ fn test_bitset_set_read() {
 #[test]
 fn test_bitset_shl() {
     let do_test = |size, shift| {
-        use rand::{Rng, SeedableRng, StdRng};
+        use rand::prelude::*;
         let mut set = BitSet::new(size);
         let mut v = vec![false; size];
-        let mut rng = StdRng::from_seed(&[1, 2, 3]);
+        let mut rng = StdRng::seed_from_u64(114514);
 
         for i in 0..size {
             let b = rng.next_u32() % 2 == 0;
@@ -243,10 +243,10 @@ fn test_bitset_shl() {
 #[test]
 fn test_bitset_shr() {
     let do_test = |size, shift| {
-        use rand::{Rng, SeedableRng, StdRng};
+        use rand::prelude::*;
         let mut set = BitSet::new(size);
         let mut v = vec![false; size];
-        let mut rng = StdRng::from_seed(&[1, 2, 3]);
+        let mut rng = StdRng::seed_from_u64(114514);
 
         for i in 0..size {
             let b = rng.next_u32() % 2 == 0;
@@ -307,10 +307,10 @@ fn test_bitset_chomp() {
 
 #[bench]
 fn bench_bitset_dp(b: &mut test::Bencher) {
-    use rand::{Rng, SeedableRng, StdRng};
+    use rand::prelude::*;
     let size = 1000;
     let mut v = Vec::new();
-    let mut rng = StdRng::from_seed(&[3, 2, 1]);
+    let mut rng = StdRng::seed_from_u64(114514);
 
     for _ in 0..size {
         v.push(rng.next_u32() as usize % size);
