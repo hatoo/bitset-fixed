@@ -1,9 +1,10 @@
 #![feature(test)]
+#![allow(clippy::suspicious_op_assign_impl)]
 
 extern crate test;
 
-const TRUE: &'static bool = &true;
-const FALSE: &'static bool = &false;
+const TRUE: &bool = &true;
+const FALSE: &bool = &false;
 
 #[derive(Clone, Debug)]
 /// Efficient bool collection
@@ -16,7 +17,7 @@ impl BitSet {
     pub fn new(size: usize) -> BitSet {
         BitSet {
             buf: vec![0; (size + 63) / 64],
-            size: size,
+            size,
         }
     }
 
