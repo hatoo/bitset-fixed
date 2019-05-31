@@ -305,11 +305,8 @@ fn test_bitset_chomp() {
     assert_eq!((set1.clone() ^ &set2).count_ones(), 2);
 }
 
-#[cfg(test)]
-use test::Bencher;
-
 #[bench]
-fn bench_bitset_dp(b: &mut Bencher) {
+fn bench_bitset_dp(b: &mut test::Bencher) {
     use rand::{Rng, SeedableRng, StdRng};
     let size = 1000;
     let mut v = Vec::new();
