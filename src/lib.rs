@@ -190,6 +190,17 @@ impl<'a> std::ops::BitXor<&'a BitSet> for BitSet {
     }
 }
 
+impl std::ops::Not for BitSet {
+    type Output = Self;
+    fn not(mut self) -> Self {
+        for x in &mut self.buf {
+            *x = !*x;
+        }
+        self.chomp();
+        self
+    }
+}
+
 #[test]
 fn test_bitset_set_read() {
     use rand::prelude::*;
