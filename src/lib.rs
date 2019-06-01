@@ -30,8 +30,16 @@ impl BitSet {
         }
     }
 
+    pub fn size(&self) -> usize {
+        self.size
+    }
+
     pub fn count_ones(&self) -> u32 {
         self.buf.iter().map(|x| x.count_ones()).sum()
+    }
+
+    pub fn count_zeros(&self) -> u32 {
+        self.buf.iter().map(|x| x.count_zeros()).sum()
     }
 
     fn chomp(&mut self) {
