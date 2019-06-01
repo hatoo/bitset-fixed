@@ -100,6 +100,15 @@ impl std::ops::Shl<usize> for BitSet {
     }
 }
 
+impl<'a> std::ops::Shl<usize> for &'a BitSet {
+    type Output = BitSet;
+    fn shl(self, x: usize) -> Self::Output {
+        let mut result = self.clone();
+        result <<= x;
+        result
+    }
+}
+
 impl std::ops::ShrAssign<usize> for BitSet {
     fn shr_assign(&mut self, x: usize) {
         let q = x >> 6;
@@ -140,6 +149,16 @@ impl std::ops::Shr<usize> for BitSet {
     }
 }
 
+impl<'a> std::ops::Shr<usize> for &'a BitSet {
+    type Output = BitSet;
+
+    fn shr(self, x: usize) -> Self::Output {
+        let mut result = self.clone();
+        result >>= x;
+        result
+    }
+}
+
 impl<'a> std::ops::BitAndAssign<&'a BitSet> for BitSet {
     fn bitand_assign(&mut self, rhs: &'a Self) {
         for (a, b) in self.buf.iter_mut().zip(rhs.buf.iter()) {
@@ -150,9 +169,18 @@ impl<'a> std::ops::BitAndAssign<&'a BitSet> for BitSet {
 
 impl<'a> std::ops::BitAnd<&'a BitSet> for BitSet {
     type Output = Self;
-    fn bitand(mut self, rhs: &'a Self) -> Self {
+    fn bitand(mut self, rhs: &'a Self) -> Self::Output {
         self &= rhs;
         self
+    }
+}
+
+impl<'a, 'b> std::ops::BitAnd<&'b BitSet> for &'a BitSet {
+    type Output = BitSet;
+    fn bitand(self, rhs: &'b BitSet) -> Self::Output {
+        let mut result = self.clone();
+        result &= rhs;
+        result
     }
 }
 
@@ -167,9 +195,18 @@ impl<'a> std::ops::BitOrAssign<&'a BitSet> for BitSet {
 
 impl<'a> std::ops::BitOr<&'a BitSet> for BitSet {
     type Output = Self;
-    fn bitor(mut self, rhs: &'a Self) -> Self {
+    fn bitor(mut self, rhs: &'a Self) -> Self::Output {
         self |= rhs;
         self
+    }
+}
+
+impl<'a, 'b> std::ops::BitOr<&'b BitSet> for &'a BitSet {
+    type Output = BitSet;
+    fn bitor(self, rhs: &'b BitSet) -> Self::Output {
+        let mut result = self.clone();
+        result |= rhs;
+        result
     }
 }
 
@@ -190,14 +227,30 @@ impl<'a> std::ops::BitXor<&'a BitSet> for BitSet {
     }
 }
 
+impl<'a, 'b> std::ops::BitXor<&'b BitSet> for &'a BitSet {
+    type Output = BitSet;
+    fn bitxor(self, rhs: &'b BitSet) -> Self::Output {
+        let mut result = self.clone();
+        result ^= rhs;
+        result
+    }
+}
+
 impl std::ops::Not for BitSet {
     type Output = Self;
-    fn not(mut self) -> Self {
+    fn not(mut self) -> Self::Output {
         for x in &mut self.buf {
             *x = !*x;
         }
         self.chomp();
         self
+    }
+}
+
+impl<'a> std::ops::Not for &'a BitSet {
+    type Output = BitSet;
+    fn not(self) -> Self::Output {
+        !self.clone()
     }
 }
 
@@ -319,9 +372,9 @@ fn test_bitset_chomp() {
 
     set1 <<= 2;
     assert_eq!(set1.count_ones(), 2);
-    assert_eq!((set1.clone() | &set2).count_ones(), 4);
-    assert_eq!((set1.clone() & &set2).count_ones(), 2);
-    assert_eq!((set1.clone() ^ &set2).count_ones(), 2);
+    assert_eq!((&set1 | &set2).count_ones(), 4);
+    assert_eq!((&set1 & &set2).count_ones(), 2);
+    assert_eq!((&set1 ^ &set2).count_ones(), 2);
 }
 
 #[bench]
