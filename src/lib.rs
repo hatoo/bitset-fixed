@@ -6,7 +6,7 @@ extern crate test;
 const TRUE: &bool = &true;
 const FALSE: &bool = &false;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 /// Efficient bool collection
 pub struct BitSet {
     buf: Vec<u64>,
