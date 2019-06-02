@@ -126,14 +126,18 @@ impl std::ops::ShrAssign<usize> for BitSet {
 
         if r == 0 {
             for i in 0..self.buf.len() - q {
-                self.buf[i] = self.buf[i + q];
+                *unsafe { self.buf.get_unchecked_mut(i) } =
+                    *unsafe { self.buf.get_unchecked(i + q) };
             }
         } else {
             for i in 0..self.buf.len() - q - 1 {
-                self.buf[i] = (self.buf[i + q] >> r) | (self.buf[i + q + 1] << (64 - r));
+                *unsafe { self.buf.get_unchecked_mut(i) } =
+                    (unsafe { self.buf.get_unchecked(i + q) } >> r)
+                        | (unsafe { self.buf.get_unchecked(i + q + 1) } << (64 - r));
             }
             let len = self.buf.len();
-            self.buf[len - q - 1] = self.buf[len - 1] >> r;
+            *unsafe { self.buf.get_unchecked_mut(len - q - 1) } =
+                unsafe { self.buf.get_unchecked(len - 1) } >> r;
         }
 
         let len = self.buf.len();
