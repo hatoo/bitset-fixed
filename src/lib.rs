@@ -74,13 +74,16 @@ impl std::ops::ShlAssign<usize> for BitSet {
 
         if r == 0 {
             for i in (q..self.buf.len()).rev() {
-                self.buf[i] = self.buf[i - q];
+                *unsafe { self.buf.get_unchecked_mut(i) } =
+                    *unsafe { self.buf.get_unchecked(i - q) };
             }
         } else {
             for i in (q + 1..self.buf.len()).rev() {
-                self.buf[i] = (self.buf[i - q] << r) | (self.buf[i - q - 1] >> (64 - r));
+                *unsafe { self.buf.get_unchecked_mut(i) } =
+                    (unsafe { self.buf.get_unchecked(i - q) } << r)
+                        | (unsafe { self.buf.get_unchecked(i - q - 1) } >> (64 - r));
             }
-            self.buf[q] = self.buf[0] << r;
+            *unsafe { self.buf.get_unchecked_mut(q) } = unsafe { self.buf.get_unchecked(0) } << r;
         }
 
         for x in &mut self.buf[..q] {
