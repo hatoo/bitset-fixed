@@ -7,13 +7,15 @@ const TRUE: &bool = &true;
 const FALSE: &bool = &false;
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-/// Efficient bool collection
+/// Fixed sized bitset
 pub struct BitSet {
     buf: Vec<u64>,
     size: usize,
 }
 
 impl BitSet {
+    /// Construct a new, zero bitset with specified capacity.
+    /// This method allocates O(size) bits
     pub fn new(size: usize) -> BitSet {
         BitSet {
             buf: vec![0; (size + 63) / 64],
@@ -21,6 +23,7 @@ impl BitSet {
         }
     }
 
+    /// Set i-th bit to `b`
     pub fn set(&mut self, i: usize, b: bool) {
         assert!(i < self.size);
         if b {
@@ -30,14 +33,17 @@ impl BitSet {
         }
     }
 
+    /// Get a size of bits
     pub fn size(&self) -> usize {
         self.size
     }
 
+    /// Get a number of ones
     pub fn count_ones(&self) -> u32 {
         self.buf.iter().map(|x| x.count_ones()).sum()
     }
 
+    /// Get a number of zeros
     pub fn count_zeros(&self) -> u32 {
         self.buf.iter().map(|x| x.count_zeros()).sum()
     }
