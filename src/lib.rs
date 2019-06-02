@@ -393,7 +393,7 @@ fn bench_bitset_dp(b: &mut test::Bencher) {
         bset.set(0, true);
 
         for &x in &v {
-            bset |= &(bset.clone() << x);
+            bset |= &(&bset << x);
         }
     });
 }
