@@ -45,7 +45,7 @@ impl BitSet {
 
     /// Get a number of zeros
     pub fn count_zeros(&self) -> u32 {
-        self.buf.iter().map(|x| x.count_zeros()).sum()
+        self.size as u32 - self.count_ones()
     }
 
     fn chomp(&mut self) {
@@ -385,6 +385,7 @@ fn test_bitset_chomp() {
 
     set1 <<= 2;
     assert_eq!(set1.count_ones(), 2);
+    assert_eq!(set1.count_zeros(), 2);
     assert_eq!((&set1 | &set2).count_ones(), 4);
     assert_eq!((&set1 & &set2).count_ones(), 2);
     assert_eq!((&set1 ^ &set2).count_ones(), 2);
