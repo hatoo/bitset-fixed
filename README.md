@@ -23,7 +23,7 @@ fn main() {
     bitset.set(0, true);
 
     for &x in &n {
-        bitset |= &(bitset.clone() << x);
+        bitset |= &(&bitset << x);
     }
 
     let ans = ((sum + 1) / 2..).find(|&i| bitset[i]).unwrap();
