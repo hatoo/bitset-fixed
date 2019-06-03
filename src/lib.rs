@@ -53,6 +53,32 @@ impl BitSet {
     }
 
     #[inline]
+    pub fn shl_or(&mut self, x: usize) {
+        let q = x >> 6;
+        let r = x & 63;
+
+        if q >= self.buf.len() {
+            return;
+        }
+
+        if r == 0 {
+            for i in (q..self.buf.len()).rev() {
+                *unsafe { self.buf.get_unchecked_mut(i) } |=
+                    *unsafe { self.buf.get_unchecked(i - q) };
+            }
+        } else {
+            for i in (q + 1..self.buf.len()).rev() {
+                *unsafe { self.buf.get_unchecked_mut(i) } |=
+                    (unsafe { self.buf.get_unchecked(i - q) } << r)
+                        | (unsafe { self.buf.get_unchecked(i - q - 1) } >> (64 - r));
+            }
+            *unsafe { self.buf.get_unchecked_mut(q) } |= unsafe { self.buf.get_unchecked(0) } << r;
+        }
+
+        self.chomp();
+    }
+
+    #[inline]
     fn chomp(&mut self) {
         let r = self.size & 63;
         if r != 0 {
@@ -432,6 +458,27 @@ fn bench_bitset_dp(b: &mut test::Bencher) {
 
         for &x in &v {
             bset |= &(&bset << x);
+        }
+    });
+}
+
+#[bench]
+fn bench_bitset_dp_shl_or(b: &mut test::Bencher) {
+    use rand::prelude::*;
+    let size = 1000;
+    let mut v = Vec::new();
+    let mut rng = StdRng::seed_from_u64(114514);
+
+    for _ in 0..size {
+        v.push(rng.next_u32() as usize % size);
+    }
+
+    b.iter(|| {
+        let mut bset = BitSet::new(100000);
+        bset.set(0, true);
+
+        for &x in &v {
+            bset.shl_or(x);
         }
     });
 }
