@@ -34,24 +34,27 @@ impl BitSet {
         }
     }
 
-    /// Get a size of bits
+    /// Get the size of bits
     #[inline]
     pub fn size(&self) -> usize {
         self.size
     }
 
-    /// Get a number of ones
+    /// Get the number of ones
     #[inline]
     pub fn count_ones(&self) -> u32 {
         self.buf.iter().map(|x| x.count_ones()).sum()
     }
 
-    /// Get a number of zeros
+    /// Get the number of zeros
     #[inline]
     pub fn count_zeros(&self) -> u32 {
         self.size as u32 - self.count_ones()
     }
 
+    /// Faster left shift and or
+    ///
+    /// `bitset | (bitset << x)`
     #[inline]
     pub fn shl_or(&mut self, x: usize) {
         let q = x >> 6;
