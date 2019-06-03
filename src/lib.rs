@@ -62,6 +62,7 @@ impl BitSet {
 impl std::ops::Index<usize> for BitSet {
     type Output = bool;
     fn index(&self, index: usize) -> &bool {
+        assert!(index < self.size);
         [FALSE, TRUE][(self.buf[index >> 6] >> (index & 63)) as usize & 1]
     }
 }
