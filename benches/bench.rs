@@ -1,7 +1,8 @@
 #![feature(test)]
 
-use bitset_fixed::BitSet;
 extern crate test;
+
+use bitset_fixed::BitSet;
 
 #[bench]
 fn bench_bitset_dp(b: &mut test::Bencher) {
