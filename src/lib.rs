@@ -78,6 +78,12 @@ impl BitSet {
         self.chomp();
     }
 
+    /// Get inner buffer
+    #[inline]
+    pub fn buffer(&self) -> &[u64] {
+        &self.buf
+    }
+
     #[inline]
     fn chomp(&mut self) {
         let r = self.size & 63;
