@@ -84,8 +84,15 @@ impl BitSet {
         &self.buf
     }
 
+    /// Get inner buffer with mutable reference
     #[inline]
-    fn chomp(&mut self) {
+    pub fn buffer_mut(&mut self) -> &mut [u64] {
+        &mut self.buf
+    }
+
+    /// Set tailing bits in inner buffer whose index are greater than size to `0`
+    #[inline]
+    pub fn chomp(&mut self) {
         let r = self.size & 63;
         if r != 0 {
             if let Some(x) = self.buf.last_mut() {
